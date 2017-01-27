@@ -35,26 +35,9 @@
                 type="submit">
             Send
         </button>
-    </form>
-</div>
-
-<div id="step-2">
-    <blockquote>
-        <p id="typing"></p>
-    </blockquote>
-
-    <form id="form-step-2">
-        <ul id="list"></ul>
 
         <footer>
-            <input type="text"
-                   placeholder="Message"
-                   id="message"
-                   class="form-control">
-
-            <button class="btn" style="margin: 10px 0" type="submit">
-                Send
-            </button>
+            <ul id="list"></ul>
         </footer>
     </form>
 </div>
@@ -65,72 +48,27 @@
     // connecting w/ socket
     var socket = io('http://localhost:8080');
 
-    socket.on('connect', function(){
+    socket.on('connect', function () {
         console.log('connect app');
     });
-    socket.on('event', function(data){
-        console.log('event app');
-    });
-    socket.on('disconnect', function(){
-        console.log('disconnect app');
+
+    socket.on('nickname', function (nickname) {
+        console.log('nickname emitted caught by app');
+        $('#list').append($('<li>').html(nickname));
     });
 
-    var user;
+    socket.on('disconnect', function () {
+        console.log('disconnect app');
+    });
 
     // on submit, send message
     $('#form-step-1').submit(function () {
         var nickname = $('#nickname').val();
         socket.emit('nickname', nickname);
-        user = nickname;
 
         // reset input
         $('#nickname').val('');
-
-        $("#step-1").hide("fast");
-        $("#step-2").show("fast");
         return false;
-    });
-
-    // on submit, send message
-    $('#form-step-2').submit(function () {
-        var message = $('#message').val();
-        var data = {
-            "message": message,
-            "sender": user
-        };
-        socket.emit('chat message', data);
-
-        // reset input
-        $('#message').val('');
-        $("#typing").text('');
-        return false;
-    });
-
-    // on message typing
-    $("#message").on("focus", ()=> {
-        socket.emit('typing', user + " is typing...");
-    });
-
-    // Let's emmit when a user is typing
-    socket.on('typing', function (typing_message) {
-        $("#typing").text(typing_message);
-    });
-
-    // Let's emmit our message to all users
-    socket.on('chat message', function (data) {
-        var obj = {
-            "message": data.message,
-            "user": data.sender
-        };
-        $('#list')
-                .append($('<li>')
-                        .html(obj.user + " says:<br/>" + obj.message));
-    });
-
-    // Let's emmit our message to all users if
-    // a user is has disconnected
-    socket.on('disconnect', function (msg) {
-        $('#list').append($('<li>').text(msg));
     });
 </script>
 </body>

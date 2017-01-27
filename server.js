@@ -5,23 +5,26 @@
 
 'use strict';
 
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-const socket = require('socket.io-client')('http://localhost:8080');
+const app = require('express')()
+    , http = require('http').Server(app)
+    , io = require('socket.io')(http)
+    , socket = require('socket.io-client')('http://localhost:8080');
 
 app.get('/', function (req, res) {
+    io.emit('nickname', '@caue');
     res.send('cool');
 });
 
-socket.on('connect', function(){
-    console.log('connect');
-});
-socket.on('nickname', function(data){
-    console.log('nickname');
-});
-socket.on('disconnect', function(){
-    console.log('disconnect');
+io.on('connect', function (socket) {
+    console.log('connect server');
+
+    socket.on('nickname', function(msg){
+        io.emit('nickname', msg);
+    });
+
+    socket.on('disconnect', function(){
+        console.log('user disconnect');
+    });
 });
 
 http.listen(8080, () => {

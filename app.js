@@ -5,9 +5,9 @@
 
 'use strict';
 
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const app = require('express')()
+    , http = require('http').Server(app)
+    , io = require('socket.io')(http);
 
 app.get('/', function (req, res) {
     res.sendfile('index.html');
