@@ -66,6 +66,10 @@
         var nickname = $('#nickname').val();
         socket.emit('nickname', nickname);
 
+        $.get("http://localhost:8080", function (data) {
+            console.log(data);
+        });
+
         // reset input
         $('#nickname').val('');
         return false;
