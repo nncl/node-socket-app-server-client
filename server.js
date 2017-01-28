@@ -22,6 +22,7 @@ app.options('*', function (req, res) {
 });
 
 app.get('/', function (req, res) {
+    // Do somehting here, such as save your data into your database, etc
     res.json({success: true, message: 'Message has been sent successfully'});
 });
 
